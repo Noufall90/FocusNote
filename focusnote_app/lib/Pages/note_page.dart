@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:focusnote_app/Component/drawer.dart';
+import 'package:focusnote_app/Component/note_tile.dart';
 import 'package:focusnote_app/Model/note.dart';
 import 'package:focusnote_app/Model/note_database.dart';
 import 'package:provider/provider.dart';
@@ -104,9 +106,10 @@ class _NotePageState extends State<NotePage>
     (
       appBar: AppBar
       (
-        elevation: 0,
+        elevation: 10,
         backgroundColor: Colors.transparent,
         foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+        iconTheme: IconThemeData(size: 30),
       ),
       backgroundColor: Theme.of(context).colorScheme.surface,
 
@@ -120,7 +123,7 @@ class _NotePageState extends State<NotePage>
         ),
       ),
 
-      drawer: Drawer(),
+      drawer: MyDrawer(),
       body: Column
       (
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,13 +135,11 @@ class _NotePageState extends State<NotePage>
             padding: const EdgeInsets.only(left: 20.0),
             child: Text('Notes', style: GoogleFonts.dmSerifText
             (
-              fontSize : 48,
+              fontSize : 50,
               color: Theme.of(context).colorScheme.inversePrimary,
             ),
             ),
           ),
-
-
 
           // LIST NOTE
           Expanded
@@ -149,30 +150,11 @@ class _NotePageState extends State<NotePage>
               itemBuilder: (context, index) 
               {
                 final note = noteDatabase.currentNote[index];
-
-                return ListTile
+                return NoteTile
                 (
-                  title: Text(note.text),
-                  trailing: Row
-                  (
-                    mainAxisSize: MainAxisSize.min,
-                    children: 
-                    [
-                      // edit button
-                      IconButton
-                      (
-                        onPressed: () => updateNote(note), 
-                        icon: const Icon(Icons.edit),
-                      ),
-
-                      // delete button
-                      IconButton
-                      (
-                        onPressed: () => deleteNote(note.id), 
-                        icon: const Icon(Icons.delete),
-                      ),
-                    ],
-                  ),
+                  text: note.text,
+                  onEditPressed: ()=> updateNote(note),
+                  onDeletPressed: ()=> deleteNote(note.id),
                 );
               },
             )

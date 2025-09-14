@@ -15,7 +15,7 @@ class ThemeProvide with ChangeNotifier
     notifyListeners();
   }
 
-  void textController ()
+  void toggleTheme ()
   {
     if(_themeData == lightMode)
     {
