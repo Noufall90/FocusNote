@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:focusnote_app/Model/note.dart';
 import 'package:focusnote_app/Model/note_database.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 
 class NotePage extends StatefulWidget {
   const NotePage({super.key});
@@ -98,37 +100,84 @@ class _NotePageState extends State<NotePage>
   {
     final noteDatabase = context.watch<NoteDatabase>();
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Notes')),
-      floatingActionButton: FloatingActionButton(
-        onPressed: createNote,
-        child: const Icon(Icons.add),
+    return Scaffold
+    (
+      appBar: AppBar
+      (
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        foregroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: ListView.builder(
-        itemCount: noteDatabase.currentNote.length,
-        itemBuilder: (context, index) {
-          final note = noteDatabase.currentNote[index];
+      backgroundColor: Theme.of(context).colorScheme.surface,
 
-          return ListTile(
-            title: Text(note.text),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // edit button
-                IconButton(
-                  onPressed: () => updateNote(note), 
-                  icon: const Icon(Icons.edit),
-                ),
+      // BUTTON ADD NOTE
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 20.0, right: 10.0), // jarak dari bawah
+        child: FloatingActionButton(
+          onPressed: createNote,
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          child: const Icon(Icons.add, color: Colors.white),
+        ),
+      ),
 
-                // delete button
-                IconButton(
-                  onPressed: () => deleteNote(note.id), 
-                  icon: const Icon(Icons.delete),
-                ),
-              ],
+      drawer: Drawer(),
+      body: Column
+      (
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: 
+        [
+          // HEADING
+          Padding
+          (
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Text('Notes', style: GoogleFonts.dmSerifText
+            (
+              fontSize : 48,
+              color: Theme.of(context).colorScheme.inversePrimary,
             ),
-          );
-        },
+            ),
+          ),
+
+
+
+          // LIST NOTE
+          Expanded
+          (
+            child: ListView.builder
+            (
+              itemCount: noteDatabase.currentNote.length,
+              itemBuilder: (context, index) 
+              {
+                final note = noteDatabase.currentNote[index];
+
+                return ListTile
+                (
+                  title: Text(note.text),
+                  trailing: Row
+                  (
+                    mainAxisSize: MainAxisSize.min,
+                    children: 
+                    [
+                      // edit button
+                      IconButton
+                      (
+                        onPressed: () => updateNote(note), 
+                        icon: const Icon(Icons.edit),
+                      ),
+
+                      // delete button
+                      IconButton
+                      (
+                        onPressed: () => deleteNote(note.id), 
+                        icon: const Icon(Icons.delete),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            )
+          )
+        ],
       ),
     );
   }
