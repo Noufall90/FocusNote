@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focusnote_app/Component/drawer.dart';
+import 'package:focusnote_app/Component/navbar.dart';
 import 'package:focusnote_app/Component/note_tile.dart';
 import 'package:focusnote_app/Model/note.dart';
 import 'package:focusnote_app/Model/note_database.dart';
@@ -26,7 +27,7 @@ class _NotePageState extends State<NotePage>
     readingNotes();
   }
 
-  // create note
+// CREATE NOTE
   void createNote() {
     showDialog(
       context: context,
@@ -38,13 +39,10 @@ class _NotePageState extends State<NotePage>
           MaterialButton(
             onPressed: () 
             {
-              // add to db
               context.read<NoteDatabase>().addNote(textController.text);
 
               // clear text
               textController.clear();
-
-              // pop dialog box
               Navigator.pop(context);
             },
             child: const Text("Create"),
@@ -54,13 +52,13 @@ class _NotePageState extends State<NotePage>
     );
   }
   
-  // READ
+// READ
   void readingNotes()
   {
     context.read<NoteDatabase>().readNote();
   }
 
-  // UPDATE NOTE
+// UPDATE NOTE
   void updateNote(Note note) {
     textController.text = note.text;
 
@@ -89,14 +87,13 @@ class _NotePageState extends State<NotePage>
     );
   }
 
-
-  // DELETE NOTE
+// DELETE NOTE
   void deleteNote(int id)
   {
     context.read<NoteDatabase>().deleteNote(id);
   }
 
-
+// UI
   @override
   Widget build(BuildContext context) 
   {
@@ -104,6 +101,7 @@ class _NotePageState extends State<NotePage>
 
     return Scaffold
     (
+      bottomNavigationBar: NavBar(),
       appBar: AppBar
       (
         elevation: 10,
@@ -115,7 +113,7 @@ class _NotePageState extends State<NotePage>
 
       // BUTTON ADD NOTE
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 20.0, right: 10.0), // jarak dari bawah
+        padding: const EdgeInsets.only(bottom: 0.0, right: 10.0), // jarak dari bawah
         child: FloatingActionButton(
           onPressed: createNote,
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -129,11 +127,11 @@ class _NotePageState extends State<NotePage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: 
         [
-          // HEADING
+// HEADING
           Padding
           (
             padding: const EdgeInsets.only(left: 20.0),
-            child: Text('Notes', style: GoogleFonts.dmSerifText
+            child: Text('Tasks', style: GoogleFonts.dmSerifText
             (
               fontSize : 50,
               color: Theme.of(context).colorScheme.inversePrimary,
@@ -141,24 +139,35 @@ class _NotePageState extends State<NotePage>
             ),
           ),
 
-          // LIST NOTE
-          Expanded
-          (
-            child: ListView.builder
-            (
-              itemCount: noteDatabase.currentNote.length,
-              itemBuilder: (context, index) 
-              {
-                final note = noteDatabase.currentNote[index];
-                return NoteTile
-                (
-                  text: note.text,
-                  onEditPressed: ()=> updateNote(note),
-                  onDeletPressed: ()=> deleteNote(note.id),
-                );
+// LIST NOTE
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: noteDatabase.currentNote.length + 1, 
+              itemBuilder: (context, index) {
+                if (index < noteDatabase.currentNote.length) {
+                  final note = noteDatabase.currentNote[index];
+                  return NoteTile(
+                    text: note.text,
+                    onEditPressed: () => updateNote(note),
+                    onDeletPressed: () => deleteNote(note.id),
+                  );
+// BELOW NOTE
+                } else {
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 10, top: 20, bottom: 20),
+                    child: Text(
+                      'Completed',
+                      style: GoogleFonts.poppins(
+                        fontSize: 15,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                  );
+                }
               },
-            )
-          )
+            ),
+          ),
         ],
       ),
     );

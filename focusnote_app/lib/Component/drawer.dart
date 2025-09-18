@@ -25,13 +25,14 @@ class MyDrawer extends StatelessWidget
               Icons.settings_applications,
               size: 40,),
           ),
-          // DARK MODE
+
+// DARK MODE
           DrawerTile
           (
             title: "Dark Mode",
             leading: const Icon(
               Icons.dark_mode,
-              size: 25,),
+              size: 30,),
             onTap: () {},
             trailing: Consumer<ThemeProvide>(
               builder: (context, themeProvider, child) => CupertinoSwitch(

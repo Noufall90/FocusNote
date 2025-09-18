@@ -39,10 +39,12 @@ class NoteTile extends StatelessWidget
 
             IconButton(
               onPressed: onDeletPressed, 
-              icon: Icon(Icons.delete))
+              icon: Icon(Icons.delete)),
           ],
         ),
+        
       ),
+      
     );
   }
 }
