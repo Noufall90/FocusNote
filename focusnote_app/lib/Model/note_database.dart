@@ -23,7 +23,8 @@ class NoteDatabase extends ChangeNotifier {
   Future<void> addNote(String text) async 
   {
     // new note object
-    final newNote = Note()..text = text; // pakai cascade operator
+    final newNote = Note(); 
+    newNote.text = text;
 
     // save to db
     await isar.writeTxn(() => isar.notes.put(newNote));
@@ -33,7 +34,6 @@ class NoteDatabase extends ChangeNotifier {
   // READ
   Future<void> readNote() async {
     final readNotes = await isar.notes.where().findAll();
-    // current note add to below code
     currentNote
       ..clear()
       ..addAll(readNotes);

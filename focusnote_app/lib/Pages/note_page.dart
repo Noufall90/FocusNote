@@ -111,7 +111,7 @@ class _NotePageState extends State<NotePage>
       ),
       backgroundColor: Theme.of(context).colorScheme.surface,
 
-      // BUTTON ADD NOTE
+// BUTTON ADD NOTE
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 0.0, right: 10.0), // jarak dari bawah
         child: FloatingActionButton(

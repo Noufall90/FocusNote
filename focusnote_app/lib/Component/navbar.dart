@@ -20,9 +20,15 @@ class _NavBarState extends State<NavBar> {
         gap: 5,
         padding: const EdgeInsets.all(15),
         tabs: const [
-          GButton(icon: Icons.edit_square, text: 'Note'),
-          GButton(icon: Icons.home, text: 'Home'),
-          GButton(icon: Icons.data_exploration, text: 'Data'),
+          GButton(
+            icon: Icons.edit_square, 
+            text: 'Note'),
+          GButton(
+            icon: Icons.home, 
+            text: 'Tasks'),
+          GButton(
+            icon: Icons.data_exploration, 
+            text: 'Data'),
         ],
       ),
     );
