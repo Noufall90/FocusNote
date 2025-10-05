@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:focusnote_app/Model/note_database.dart';
+import 'package:focusnote_app/Model/task_database.dart';
 import 'package:focusnote_app/Tema/theme_provide.dart';
 import 'package:provider/provider.dart';
+import 'Pages/task_page.dart';
 import 'Pages/note_page.dart';
+import 'Pages/stat_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,8 +28,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const NotePage(),
-      theme: context.watch<ThemeProvide>().themeData, // lebih clean
+      theme: context.watch<ThemeProvide>().themeData,
+
+      // Halaman pertama yang dibuka
+      initialRoute: '/task',
+
+      // Daftar halaman
+      routes: {
+        '/task': (context) => const TaskPage(),
+        '/note': (context) => const NotePage(),
+        '/stat': (context) => const StatPage(),
+      },
     );
   }
 }
+

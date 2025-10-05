@@ -3,14 +3,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:focusnote_app/Component/drawer.dart';
 import 'package:focusnote_app/Component/navbar.dart';
 
-class NotePage extends StatefulWidget{
-  const NotePage({super.key});
+class StatPage extends StatefulWidget{
+  const StatPage({super.key});
 
   @override
-  State<NotePage> createState() => _NotePageState();
+  State<StatPage> createState() => _StatPageState();
 }
 
-class _NotePageState extends State<NotePage> {
+class _StatPageState extends State<StatPage> {
   @override 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,10 +18,10 @@ class _NotePageState extends State<NotePage> {
       endDrawer: const MyDrawer(),
 
       // NAVBAR
-      bottomNavigationBar: NavBar(selectedIndex: 0),
+      bottomNavigationBar: NavBar(selectedIndex: 2),
       appBar: AppBar
       (
-        title: const Text("Notes"),
+        title: const Text("Statistik"),
         elevation: 10,
         backgroundColor: const Color.fromARGB(0, 212, 192, 192),
         foregroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -36,7 +36,7 @@ class _NotePageState extends State<NotePage> {
           Padding(
             padding: const EdgeInsets.only(left: 20.0, top: 0),
             child: Text(
-              'Notes',
+              'Statistik',
               style: GoogleFonts.dmSerifText(
                 fontSize: 50,
                 color: Theme.of(context).colorScheme.inversePrimary,
