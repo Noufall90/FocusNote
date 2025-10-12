@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:focusnote_app/Component/drawer_tile.dart';
-import 'package:focusnote_app/Tema/theme_provide.dart';
+import 'package:focusnote_app/component/drawer_tile.dart';
+import 'package:focusnote_app/tema/theme_provide.dart';
 import 'package:provider/provider.dart';
 
 class MyDrawer extends StatelessWidget

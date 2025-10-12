@@ -15,7 +15,7 @@ class _NavBarState extends State<NavBar> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       child: GNav(
-        selectedIndex: widget.selectedIndex,   // <- penting
+        selectedIndex: widget.selectedIndex, 
         color: Colors.white,
         activeColor: Theme.of(context).colorScheme.inversePrimary,
         tabBackgroundColor: Theme.of(context).colorScheme.secondary,

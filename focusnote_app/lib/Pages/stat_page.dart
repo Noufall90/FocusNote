@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:focusnote_app/Component/drawer.dart';
-import 'package:focusnote_app/Component/navbar.dart';
+import 'package:focusnote_app/component/drawer.dart';
+import 'package:focusnote_app/component/navbar.dart';
 
 class StatPage extends StatefulWidget{
   const StatPage({super.key});

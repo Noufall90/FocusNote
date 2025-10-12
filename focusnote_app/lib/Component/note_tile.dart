@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 
-class TaskTile extends StatelessWidget {
+class NoteTile extends StatelessWidget {
   final String text;
-  final bool isCompleted;
   final void Function()? onEditPressed;
   final void Function()? onDeletePressed;
-  final ValueChanged<bool?> onCheckboxChanged;
 
-  const TaskTile({
+  const NoteTile({
     super.key,
     required this.text,
-    required this.isCompleted,
     required this.onEditPressed,
     required this.onDeletePressed,
-    required this.onCheckboxChanged,
   });
 
   @override
@@ -27,14 +23,7 @@ class TaskTile extends StatelessWidget {
       child: ListTile(
         title: Text(
           text,
-          style: TextStyle(
-            decoration:
-                isCompleted ? TextDecoration.lineThrough : TextDecoration.none,
-          ),
-        ),
-        leading: Checkbox(
-          value: isCompleted,
-          onChanged: onCheckboxChanged,
+          style: const TextStyle(fontSize: 16),
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
