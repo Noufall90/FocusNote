@@ -91,12 +91,27 @@ class _NotePageState extends State<NotePage> {
   Widget build(BuildContext context) {
     final noteDatabase = context.watch<NoteDatabase>();
 
-    return Scaffold(
+       return Scaffold(
       bottomNavigationBar: const NavBar(selectedIndex: 0),
       appBar: AppBar(
-        title: const Text("Notes"),
+        titleSpacing: 0,
+        title: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child: Image.asset(
+                Theme.of(context).brightness == Brightness.dark
+                    ? 'assets/icon/logo_bar_putih.png' 
+                    : 'assets/icon/logo_bar.png',  
+                height: 30,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ],
+        ),
+        centerTitle: false,
         elevation: 10,
-        backgroundColor: const Color.fromARGB(0, 212, 192, 192),
+        backgroundColor: Theme.of(context).colorScheme.surface,
         foregroundColor: Theme.of(context).colorScheme.inversePrimary,
         iconTheme: const IconThemeData(size: 30),
       ),

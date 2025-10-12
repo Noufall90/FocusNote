@@ -14,21 +14,32 @@ class _StatPageState extends State<StatPage> {
   @override 
   Widget build(BuildContext context) {
     return Scaffold(
-      // DRAWER
-      endDrawer: const MyDrawer(),
-
-      // NAVBAR
-      bottomNavigationBar: NavBar(selectedIndex: 2),
-      appBar: AppBar
-      (
-        title: const Text("Statistik"),
+      bottomNavigationBar: const NavBar(selectedIndex: 2),
+      appBar: AppBar(
+        titleSpacing: 0,
+        title: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child: Image.asset(
+                Theme.of(context).brightness == Brightness.dark
+                    ? 'assets/icon/logo_bar_putih.png' 
+                    : 'assets/icon/logo_bar.png',  
+                height: 30,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ],
+        ),
+        centerTitle: false,
         elevation: 10,
-        backgroundColor: const Color.fromARGB(0, 212, 192, 192),
+        backgroundColor: Theme.of(context).colorScheme.surface,
         foregroundColor: Theme.of(context).colorScheme.inversePrimary,
-        iconTheme: IconThemeData(size: 30),
+        iconTheme: const IconThemeData(size: 30),
       ),
       
       backgroundColor: Theme.of(context).colorScheme.surface,
+      endDrawer: const MyDrawer(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

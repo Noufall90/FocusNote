@@ -53,9 +53,8 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   // UPDATE TASK
-  void _updateTask(Task task) { // Changed from TasksData to Task
+  void _updateTask(Task task) { 
     textController.text = task.title;
-
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -94,12 +93,28 @@ class _TaskPageState extends State<TaskPage> {
     return Scaffold(
       bottomNavigationBar: const NavBar(selectedIndex: 1),
       appBar: AppBar(
-        title: const Text("Tasks"),
+        titleSpacing: 0,
+        title: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child: Image.asset(
+                Theme.of(context).brightness == Brightness.dark
+                    ? 'assets/icon/logo_bar_putih.png' 
+                    : 'assets/icon/logo_bar.png',  
+                height: 30,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ],
+        ),
+        centerTitle: false,
         elevation: 10,
-        backgroundColor: const Color.fromARGB(0, 212, 192, 192),
+        backgroundColor: Theme.of(context).colorScheme.surface,
         foregroundColor: Theme.of(context).colorScheme.inversePrimary,
         iconTheme: const IconThemeData(size: 30),
       ),
+
       backgroundColor: Theme.of(context).colorScheme.surface,
 
       // BUTTON ADD TASK
