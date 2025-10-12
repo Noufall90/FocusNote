@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'note_database.dart';
+part of 'task_database.dart';
 
 // ignore_for_file: type=lint
-class $NotesTable extends Notes with TableInfo<$NotesTable, Note> {
+class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $NotesTable(this.attachedDatabase, [this._alias]);
+  $TasksTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -29,33 +29,36 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, Note> {
     false,
     additionalChecks: GeneratedColumn.checkTextLength(
       minTextLength: 1,
-      maxTextLength: 200,
+      maxTextLength: 100,
     ),
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _contentMeta = const VerificationMeta(
-    'content',
+  static const VerificationMeta _isCompletedMeta = const VerificationMeta(
+    'isCompleted',
   );
   @override
-  late final GeneratedColumn<String> content = GeneratedColumn<String>(
-    'content',
+  late final GeneratedColumn<bool> isCompleted = GeneratedColumn<bool>(
+    'is_completed',
     aliasedName,
     false,
-    type: DriftSqlType.string,
+    type: DriftSqlType.bool,
     requiredDuringInsert: false,
-    defaultValue: const Constant(''),
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_completed" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
   );
   @override
-  List<GeneratedColumn> get $columns => [id, title, content];
+  List<GeneratedColumn> get $columns => [id, title, isCompleted];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'notes';
+  static const String $name = 'tasks';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Note> instance, {
+    Insertable<Task> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -71,10 +74,13 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, Note> {
     } else if (isInserting) {
       context.missing(_titleMeta);
     }
-    if (data.containsKey('content')) {
+    if (data.containsKey('is_completed')) {
       context.handle(
-        _contentMeta,
-        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+        _isCompletedMeta,
+        isCompleted.isAcceptableOrUnknown(
+          data['is_completed']!,
+          _isCompletedMeta,
+        ),
       );
     }
     return context;
@@ -83,9 +89,9 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, Note> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Note map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Task map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Note(
+    return Task(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -94,50 +100,54 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, Note> {
         DriftSqlType.string,
         data['${effectivePrefix}title'],
       )!,
-      content: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}content'],
+      isCompleted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_completed'],
       )!,
     );
   }
 
   @override
-  $NotesTable createAlias(String alias) {
-    return $NotesTable(attachedDatabase, alias);
+  $TasksTable createAlias(String alias) {
+    return $TasksTable(attachedDatabase, alias);
   }
 }
 
-class Note extends DataClass implements Insertable<Note> {
+class Task extends DataClass implements Insertable<Task> {
   final int id;
   final String title;
-  final String content;
-  const Note({required this.id, required this.title, required this.content});
+  final bool isCompleted;
+  const Task({
+    required this.id,
+    required this.title,
+    required this.isCompleted,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['title'] = Variable<String>(title);
-    map['content'] = Variable<String>(content);
+    map['is_completed'] = Variable<bool>(isCompleted);
     return map;
   }
 
-  NotesCompanion toCompanion(bool nullToAbsent) {
-    return NotesCompanion(
+  TasksCompanion toCompanion(bool nullToAbsent) {
+    return TasksCompanion(
       id: Value(id),
       title: Value(title),
-      content: Value(content),
+      isCompleted: Value(isCompleted),
     );
   }
 
-  factory Note.fromJson(
+  factory Task.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Note(
+    return Task(
       id: serializer.fromJson<int>(json['id']),
       title: serializer.fromJson<String>(json['title']),
-      content: serializer.fromJson<String>(json['content']),
+      isCompleted: serializer.fromJson<bool>(json['isCompleted']),
     );
   }
   @override
@@ -146,79 +156,81 @@ class Note extends DataClass implements Insertable<Note> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'title': serializer.toJson<String>(title),
-      'content': serializer.toJson<String>(content),
+      'isCompleted': serializer.toJson<bool>(isCompleted),
     };
   }
 
-  Note copyWith({int? id, String? title, String? content}) => Note(
+  Task copyWith({int? id, String? title, bool? isCompleted}) => Task(
     id: id ?? this.id,
     title: title ?? this.title,
-    content: content ?? this.content,
+    isCompleted: isCompleted ?? this.isCompleted,
   );
-  Note copyWithCompanion(NotesCompanion data) {
-    return Note(
+  Task copyWithCompanion(TasksCompanion data) {
+    return Task(
       id: data.id.present ? data.id.value : this.id,
       title: data.title.present ? data.title.value : this.title,
-      content: data.content.present ? data.content.value : this.content,
+      isCompleted: data.isCompleted.present
+          ? data.isCompleted.value
+          : this.isCompleted,
     );
   }
 
   @override
   String toString() {
-    return (StringBuffer('Note(')
+    return (StringBuffer('Task(')
           ..write('id: $id, ')
           ..write('title: $title, ')
-          ..write('content: $content')
+          ..write('isCompleted: $isCompleted')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, title, content);
+  int get hashCode => Object.hash(id, title, isCompleted);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Note &&
+      (other is Task &&
           other.id == this.id &&
           other.title == this.title &&
-          other.content == this.content);
+          other.isCompleted == this.isCompleted);
 }
 
-class NotesCompanion extends UpdateCompanion<Note> {
+class TasksCompanion extends UpdateCompanion<Task> {
   final Value<int> id;
   final Value<String> title;
-  final Value<String> content;
-  const NotesCompanion({
+  final Value<bool> isCompleted;
+  const TasksCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
-    this.content = const Value.absent(),
+    this.isCompleted = const Value.absent(),
   });
-  NotesCompanion.insert({
+  TasksCompanion.insert({
     this.id = const Value.absent(),
     required String title,
-    this.content = const Value.absent(),
+    this.isCompleted = const Value.absent(),
   }) : title = Value(title);
-  static Insertable<Note> custom({
+  static Insertable<Task> custom({
     Expression<int>? id,
     Expression<String>? title,
-    Expression<String>? content,
+    Expression<bool>? isCompleted,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (title != null) 'title': title,
-      if (content != null) 'content': content,
+      if (isCompleted != null) 'is_completed': isCompleted,
     });
   }
 
-  NotesCompanion copyWith({
+  TasksCompanion copyWith({
     Value<int>? id,
     Value<String>? title,
-    Value<String>? content,
+    Value<bool>? isCompleted,
   }) {
-    return NotesCompanion(
+    return TasksCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
-      content: content ?? this.content,
+      isCompleted: isCompleted ?? this.isCompleted,
     );
   }
 
@@ -231,49 +243,50 @@ class NotesCompanion extends UpdateCompanion<Note> {
     if (title.present) {
       map['title'] = Variable<String>(title.value);
     }
-    if (content.present) {
-      map['content'] = Variable<String>(content.value);
+    if (isCompleted.present) {
+      map['is_completed'] = Variable<bool>(isCompleted.value);
     }
     return map;
   }
 
   @override
   String toString() {
-    return (StringBuffer('NotesCompanion(')
+    return (StringBuffer('TasksCompanion(')
           ..write('id: $id, ')
           ..write('title: $title, ')
-          ..write('content: $content')
+          ..write('isCompleted: $isCompleted')
           ..write(')'))
         .toString();
   }
 }
 
-abstract class _$NoteDatabase extends GeneratedDatabase {
-  _$NoteDatabase(QueryExecutor e) : super(e);
-  $NoteDatabaseManager get managers => $NoteDatabaseManager(this);
-  late final $NotesTable notes = $NotesTable(this);
+abstract class _$TaskDatabase extends GeneratedDatabase {
+  _$TaskDatabase(QueryExecutor e) : super(e);
+  $TaskDatabaseManager get managers => $TaskDatabaseManager(this);
+  late final $TasksTable tasks = $TasksTable(this);
+  late final TaskDao taskDao = TaskDao(this as TaskDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [notes];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [tasks];
 }
 
-typedef $$NotesTableCreateCompanionBuilder =
-    NotesCompanion Function({
+typedef $$TasksTableCreateCompanionBuilder =
+    TasksCompanion Function({
       Value<int> id,
       required String title,
-      Value<String> content,
+      Value<bool> isCompleted,
     });
-typedef $$NotesTableUpdateCompanionBuilder =
-    NotesCompanion Function({
+typedef $$TasksTableUpdateCompanionBuilder =
+    TasksCompanion Function({
       Value<int> id,
       Value<String> title,
-      Value<String> content,
+      Value<bool> isCompleted,
     });
 
-class $$NotesTableFilterComposer extends Composer<_$NoteDatabase, $NotesTable> {
-  $$NotesTableFilterComposer({
+class $$TasksTableFilterComposer extends Composer<_$TaskDatabase, $TasksTable> {
+  $$TasksTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -290,15 +303,15 @@ class $$NotesTableFilterComposer extends Composer<_$NoteDatabase, $NotesTable> {
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get content => $composableBuilder(
-    column: $table.content,
+  ColumnFilters<bool> get isCompleted => $composableBuilder(
+    column: $table.isCompleted,
     builder: (column) => ColumnFilters(column),
   );
 }
 
-class $$NotesTableOrderingComposer
-    extends Composer<_$NoteDatabase, $NotesTable> {
-  $$NotesTableOrderingComposer({
+class $$TasksTableOrderingComposer
+    extends Composer<_$TaskDatabase, $TasksTable> {
+  $$TasksTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -315,15 +328,15 @@ class $$NotesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get content => $composableBuilder(
-    column: $table.content,
+  ColumnOrderings<bool> get isCompleted => $composableBuilder(
+    column: $table.isCompleted,
     builder: (column) => ColumnOrderings(column),
   );
 }
 
-class $$NotesTableAnnotationComposer
-    extends Composer<_$NoteDatabase, $NotesTable> {
-  $$NotesTableAnnotationComposer({
+class $$TasksTableAnnotationComposer
+    extends Composer<_$TaskDatabase, $TasksTable> {
+  $$TasksTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -336,49 +349,58 @@ class $$NotesTableAnnotationComposer
   GeneratedColumn<String> get title =>
       $composableBuilder(column: $table.title, builder: (column) => column);
 
-  GeneratedColumn<String> get content =>
-      $composableBuilder(column: $table.content, builder: (column) => column);
+  GeneratedColumn<bool> get isCompleted => $composableBuilder(
+    column: $table.isCompleted,
+    builder: (column) => column,
+  );
 }
 
-class $$NotesTableTableManager
+class $$TasksTableTableManager
     extends
         RootTableManager<
-          _$NoteDatabase,
-          $NotesTable,
-          Note,
-          $$NotesTableFilterComposer,
-          $$NotesTableOrderingComposer,
-          $$NotesTableAnnotationComposer,
-          $$NotesTableCreateCompanionBuilder,
-          $$NotesTableUpdateCompanionBuilder,
-          (Note, BaseReferences<_$NoteDatabase, $NotesTable, Note>),
-          Note,
+          _$TaskDatabase,
+          $TasksTable,
+          Task,
+          $$TasksTableFilterComposer,
+          $$TasksTableOrderingComposer,
+          $$TasksTableAnnotationComposer,
+          $$TasksTableCreateCompanionBuilder,
+          $$TasksTableUpdateCompanionBuilder,
+          (Task, BaseReferences<_$TaskDatabase, $TasksTable, Task>),
+          Task,
           PrefetchHooks Function()
         > {
-  $$NotesTableTableManager(_$NoteDatabase db, $NotesTable table)
+  $$TasksTableTableManager(_$TaskDatabase db, $TasksTable table)
     : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$NotesTableFilterComposer($db: db, $table: table),
+              $$TasksTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$NotesTableOrderingComposer($db: db, $table: table),
+              $$TasksTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$NotesTableAnnotationComposer($db: db, $table: table),
+              $$TasksTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> title = const Value.absent(),
-                Value<String> content = const Value.absent(),
-              }) => NotesCompanion(id: id, title: title, content: content),
+                Value<bool> isCompleted = const Value.absent(),
+              }) => TasksCompanion(
+                id: id,
+                title: title,
+                isCompleted: isCompleted,
+              ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 required String title,
-                Value<String> content = const Value.absent(),
-              }) =>
-                  NotesCompanion.insert(id: id, title: title, content: content),
+                Value<bool> isCompleted = const Value.absent(),
+              }) => TasksCompanion.insert(
+                id: id,
+                title: title,
+                isCompleted: isCompleted,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
@@ -387,24 +409,24 @@ class $$NotesTableTableManager
       );
 }
 
-typedef $$NotesTableProcessedTableManager =
+typedef $$TasksTableProcessedTableManager =
     ProcessedTableManager<
-      _$NoteDatabase,
-      $NotesTable,
-      Note,
-      $$NotesTableFilterComposer,
-      $$NotesTableOrderingComposer,
-      $$NotesTableAnnotationComposer,
-      $$NotesTableCreateCompanionBuilder,
-      $$NotesTableUpdateCompanionBuilder,
-      (Note, BaseReferences<_$NoteDatabase, $NotesTable, Note>),
-      Note,
+      _$TaskDatabase,
+      $TasksTable,
+      Task,
+      $$TasksTableFilterComposer,
+      $$TasksTableOrderingComposer,
+      $$TasksTableAnnotationComposer,
+      $$TasksTableCreateCompanionBuilder,
+      $$TasksTableUpdateCompanionBuilder,
+      (Task, BaseReferences<_$TaskDatabase, $TasksTable, Task>),
+      Task,
       PrefetchHooks Function()
     >;
 
-class $NoteDatabaseManager {
-  final _$NoteDatabase _db;
-  $NoteDatabaseManager(this._db);
-  $$NotesTableTableManager get notes =>
-      $$NotesTableTableManager(_db, _db.notes);
+class $TaskDatabaseManager {
+  final _$TaskDatabase _db;
+  $TaskDatabaseManager(this._db);
+  $$TasksTableTableManager get tasks =>
+      $$TasksTableTableManager(_db, _db.tasks);
 }

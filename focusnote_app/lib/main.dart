@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:focusnote_app/model/task_database.dart';
-import 'package:focusnote_app/database/note_database.dart';
+import 'package:focusnote_app/database/task/task_database.dart';
+import 'package:focusnote_app/database/notes/note_database.dart';
 import 'package:focusnote_app/pages/note_page.dart';
 import 'package:focusnote_app/pages/stat_page.dart';
 import 'package:focusnote_app/pages/task_page.dart';

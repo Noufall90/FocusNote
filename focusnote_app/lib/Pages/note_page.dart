@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:focusnote_app/component/drawer.dart';
 import 'package:focusnote_app/component/navbar.dart';
 import 'package:focusnote_app/component/note_tile.dart';
-import 'package:focusnote_app/database/note_database.dart';
+import 'package:focusnote_app/database/notes/note_database.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 

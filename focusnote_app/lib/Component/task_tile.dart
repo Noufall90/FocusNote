@@ -35,6 +35,10 @@ class TaskTile extends StatelessWidget {
         leading: Checkbox(
           value: isCompleted,
           onChanged: onCheckboxChanged,
+          checkColor: Colors.white, // warna tanda centang
+          fillColor: WidgetStateProperty.all(
+            Theme.of(context).colorScheme.secondary,
+          ),
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,

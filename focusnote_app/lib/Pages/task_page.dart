@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:focusnote_app/component/drawer.dart';
 import 'package:focusnote_app/component/navbar.dart';
 import 'package:focusnote_app/component/task_tile.dart';
-import 'package:focusnote_app/model/task_database.dart';
+import 'package:focusnote_app/database/task/task_database.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -133,38 +133,69 @@ class _TaskPageState extends State<TaskPage> {
           ),
 
           // LIST TASKS
-          Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: taskDatabase.currentTasks.length + 1,
-              itemBuilder: (context, index) {
-                if (index < taskDatabase.currentTasks.length) {
-                  final task = taskDatabase.currentTasks[index];
-                  return TaskTile(
-                    text: task.title,
-                    isCompleted: task.isCompleted,
-                    onEditPressed: () => _updateTask(task),
-                    onDeletePressed: () => _deleteTask(task.id),
-                    onCheckboxChanged: (value) {
-                      context
-                          .read<TaskDatabase>()
-                          .updateCompletion(task.id, value ?? false);
-                    },
-                  );
-                } 
-                else {
-                  return Padding(
-                    padding:
-                        const EdgeInsets.only(left: 10, top: 20, bottom: 20),
-                    child: Text(
-                      'Completed',
-                      style: GoogleFonts.poppins(
-                        fontSize: 15,
-                        color: Theme.of(context).colorScheme.secondary,
+            Expanded(
+            child: Builder(
+              builder: (context) {
+                final allTasks = taskDatabase.currentTasks;
+                final activeTasks = allTasks.where((t) => !t.isCompleted).toList();
+                final completedTasks = allTasks.where((t) => t.isCompleted).toList();
+
+                return ListView(
+                  padding: const EdgeInsets.only(bottom: 80),
+                  children: [
+                    // --- ACTIVE TASKS ---
+                    if (activeTasks.isEmpty)
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Text(
+                            "No active tasks",
+                            style: GoogleFonts.poppins(
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
+                        ),
+                      )
+                    else
+                      ...activeTasks.map((task) => TaskTile(
+                            text: task.title,
+                            isCompleted: task.isCompleted,
+                            onEditPressed: () => _updateTask(task),
+                            onDeletePressed: () => _deleteTask(task.id),
+                            onCheckboxChanged: (value) {
+                              context
+                                  .read<TaskDatabase>()
+                                  .updateCompletion(task.id, value ?? false);
+                            },
+                          )),
+
+                    // COMPLETED SECTION TITLE 
+                    if (completedTasks.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20, top: 30, bottom: 10),
+                        child: Text(
+                          "Completed",
+                          style: GoogleFonts.poppins(
+                            fontSize: 18,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
                       ),
-                    ),
-                  );
-                }
+
+                    // COMPLETED TASKS
+                    ...completedTasks.map((task) => TaskTile(
+                          text: task.title,
+                          isCompleted: task.isCompleted,
+                          onEditPressed: () => _updateTask(task),
+                          onDeletePressed: () => _deleteTask(task.id),
+                          onCheckboxChanged: (value) {
+                            context
+                                .read<TaskDatabase>()
+                                .updateCompletion(task.id, value ?? false);
+                          },
+                        )),
+                  ],
+                );
               },
             ),
           ),
