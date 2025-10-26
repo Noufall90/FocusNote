@@ -1,4 +1,3 @@
-// lib/database/tables/notes.dart
 import 'package:drift/drift.dart';
 
 class Notes extends Table {

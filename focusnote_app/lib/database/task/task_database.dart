@@ -21,13 +21,12 @@ class TaskDatabase extends _$TaskDatabase with ChangeNotifier {
 
   TaskDao get dao => taskDao;
 
-  // Membaca ulang untuk UI
+  // READ
   Future<void> readTasks() async {
     currentTasks = await dao.getAllTasks();
     notifyListeners();
   }
 
-  // Proxy ke DAO biar kompatibel dengan kode lama
   Future<void> addTask(String title) async {
     await dao.addTask(title);
     await readTasks();

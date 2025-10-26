@@ -29,13 +29,12 @@ class NoteDatabase extends _$NoteDatabase with ChangeNotifier {
 
   NoteDao get dao => noteDao;
 
-  // READ untuk sinkronisasi UI
+  // READ
   Future<void> readNotes() async {
     currentNotes = await dao.getAllNotes();
     notifyListeners();
   }
 
-  // Proxy ke DAO agar NotePage tidak perlu diubah banyak
   Future<void> addNote(String title, [String content = '']) async {
     await dao.addNote(title, content);
     await readNotes();
