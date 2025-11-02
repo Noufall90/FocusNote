@@ -1,36 +1,43 @@
-// lib/database/note_dao.dart
+// lib/database/notes/note_dao.dart
 import 'package:drift/drift.dart';
-import 'package:focusnote_app/database/notes/note_database.dart';
-import 'package:focusnote_app/database/notes/tables/notes.dart';
+import 'package:focusnote_app/database/task/task_database.dart';
+import 'tables/notes.dart';
 
 part 'note_dao.g.dart';
 
 @DriftAccessor(tables: [Notes])
-class NoteDao extends DatabaseAccessor<NoteDatabase> with _$NoteDaoMixin {
+class NoteDao extends DatabaseAccessor<TaskDatabase> with _$NoteDaoMixin {
   NoteDao(super.db);
 
   // CREATE
   Future<void> addNote(String title, [String content = '']) async {
-    await into(notes).insert(
-      NotesCompanion.insert(title: title, content: Value(content)),
-    );
+    await into(notes).insert(NotesCompanion(
+      title: Value(title),
+      content: Value(content),
+    ));
   }
 
   // READ
-  Future<List<Note>> getAllNotes() => select(notes).get();
+  Future<List<Note>> getAllNotes() =>
+      (select(notes)..orderBy([(t) => OrderingTerm(expression: t.id, mode: OrderingMode.desc)])).get();
 
   // UPDATE
-  Future<void> updateNote(int id, String title, [String? content]) async {
-    await (update(notes)..where((t) => t.id.equals(id))).write(
+  Future<void> updateNote(int id, String newTitle, String newContent) async {
+    await (update(notes)..where((n) => n.id.equals(id))).write(
       NotesCompanion(
-        title: Value(title),
-        content: content != null ? Value(content) : const Value.absent(),
+        title: Value(newTitle),
+        content: Value(newContent),
       ),
     );
   }
 
   // DELETE
   Future<void> deleteNote(int id) async {
-    await (delete(notes)..where((t) => t.id.equals(id))).go();
+    await (delete(notes)..where((n) => n.id.equals(id))).go();
+  }
+
+  // Opsional: hapus note kosong
+  Future<void> deleteEmptyNotes() async {
+    await (delete(notes)..where((n) => n.content.equals(''))).go();
   }
 }

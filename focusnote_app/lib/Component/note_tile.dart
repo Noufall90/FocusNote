@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 class NoteTile extends StatelessWidget {
-  final String text;
+  final String title;
+  final String content;
   final void Function()? onEditPressed;
   final void Function()? onDeletePressed;
 
   const NoteTile({
     super.key,
-    required this.text,
+    required this.title,
+    required this.content,
     required this.onEditPressed,
     required this.onDeletePressed,
   });
@@ -17,14 +19,35 @@ class NoteTile extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
       ),
-      margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.all(8),
       child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+
         title: Text(
-          text,
-          style: const TextStyle(fontSize: 16),
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+            color: Theme.of(context).colorScheme.inversePrimary,
+          ),
         ),
+
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 6.0),
+          child: Text(
+            content.isNotEmpty ? content : "(No content)",
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 14,
+              color: Theme.of(context).colorScheme.inversePrimary,
+            ),
+          ),
+        ),
+
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

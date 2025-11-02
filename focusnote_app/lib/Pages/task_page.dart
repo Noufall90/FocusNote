@@ -24,28 +24,42 @@ class _TaskPageState extends State<TaskPage> {
 
   // CREATE TASK
   void _createTask() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Create Task"),
-        content: TextField(
-          controller: textController,
-          decoration: const InputDecoration(hintText: "Enter task title..."),
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text("Create Task"),
+      content: TextField(
+        controller: textController,
+        decoration: const InputDecoration(
+          hintText: "Enter task title...",
         ),
-        actions: [
-          MaterialButton(
-            onPressed: () {
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          style: TextButton.styleFrom(
+            foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+          ),
+          child: const Text("Cancel"),
+        ),
+        FilledButton(
+          onPressed: () {
+            if (textController.text.isNotEmpty) {
               context.read<TaskDatabase>().addTask(textController.text);
-
               textController.clear();
               Navigator.pop(context);
-            },
-            child: const Text("Create"),
+            }
+          },
+          style: FilledButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            foregroundColor: Theme.of(context).colorScheme.primary,
           ),
-        ],
-      ),
-    );
-  }
+          child: const Text("Create"),
+        ),
+      ],
+    ),
+  );
+}
 
   // READ TASKS
   void _readTasks() {
@@ -123,9 +137,9 @@ class _TaskPageState extends State<TaskPage> {
         child: FloatingActionButton(
           onPressed: _createTask,
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          child: const Icon(
+         child: Icon(
             Icons.add,
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
       ),

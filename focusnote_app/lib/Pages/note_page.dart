@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:focusnote_app/component/drawer.dart';
 import 'package:focusnote_app/component/navbar.dart';
 import 'package:focusnote_app/component/note_tile.dart';
-import 'package:focusnote_app/database/notes/note_database.dart';
+import 'package:focusnote_app/database/task/task_database.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -24,22 +24,50 @@ class _NotePageState extends State<NotePage> {
 
   // CREATE 
   void _createNote() {
+    final titleController = TextEditingController();
+    final contentController = TextEditingController();
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text("Create Note"),
-        content: TextField(
-          controller: textController,
-          decoration: const InputDecoration(hintText: "Enter note title..."),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: titleController,
+              decoration: const InputDecoration(hintText: "Enter note title..."),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: contentController,
+              decoration: const InputDecoration(hintText: "Enter note content..."),
+              maxLines: 3,
+            ),
+          ],
         ),
-        actions: [
-          MaterialButton(
+       actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+            ),
+            child: const Text("Cancel"),
+          ),
+          FilledButton(
             onPressed: () {
-              context.read<NoteDatabase>().addNote(textController.text);
-
-              textController.clear();
-              Navigator.pop(context);
+              if (titleController.text.isNotEmpty) {
+                context.read<TaskDatabase>().addNote(
+                      titleController.text,
+                      contentController.text,
+                    );
+                Navigator.pop(context);
+              }
             },
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              foregroundColor: Theme.of(context).colorScheme.primary,
+            ),
             child: const Text("Create"),
           ),
         ],
@@ -49,30 +77,48 @@ class _NotePageState extends State<NotePage> {
 
   // READ 
   void _readNotes() {
-    context.read<NoteDatabase>().readNotes();
+    context.read<TaskDatabase>().readNotes();
   }
 
   // UPDATE 
   void _updateNote(Note note) { 
-    textController.text = note.title;
+    final titleController = TextEditingController(text: note.title);
+    final contentController = TextEditingController(text: note.content);
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text("Edit Note"),
-        content: TextField(
-          controller: textController,
-          decoration: const InputDecoration(hintText: "Update note title..."),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: titleController,
+              decoration: const InputDecoration(hintText: "Update note title..."),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: contentController,
+              decoration: const InputDecoration(hintText: "Update note content..."),
+              maxLines: 3,
+            ),
+          ],
         ),
         actions: [
-          MaterialButton(
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          FilledButton(
             onPressed: () {
-              context
-                  .read<NoteDatabase>()
-                  .updateNote(note.id, textController.text);
-
-              textController.clear();
-              Navigator.pop(context);
+              if (titleController.text.isNotEmpty) {
+                context.read<TaskDatabase>().updateNote(
+                      note.id,
+                      titleController.text,
+                      contentController.text,
+                    );
+                Navigator.pop(context);
+              }
             },
             child: const Text("Update"),
           ),
@@ -83,13 +129,13 @@ class _NotePageState extends State<NotePage> {
 
   // DELETE 
   void _deleteNote(int id) {
-    context.read<NoteDatabase>().deleteNote(id);
+    context.read<TaskDatabase>().deleteNote(id);
   }
 
   // UI
   @override
   Widget build(BuildContext context) {
-    final noteDatabase = context.watch<NoteDatabase>();
+    final noteDatabase = context.watch<TaskDatabase>();
 
        return Scaffold(
       bottomNavigationBar: const NavBar(selectedIndex: 0),
@@ -123,9 +169,9 @@ class _NotePageState extends State<NotePage> {
         child: FloatingActionButton(
           onPressed: _createNote,
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          child: const Icon(
+          child: Icon(
             Icons.add,
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
       ),
@@ -151,18 +197,15 @@ class _NotePageState extends State<NotePage> {
           Expanded(
             child: ListView.builder(
               shrinkWrap: true,
-              itemCount: noteDatabase.currentNotes.length + 1,
+              itemCount: noteDatabase.currentNotes.length,
               itemBuilder: (context, index) {
-                if (index < noteDatabase.currentNotes.length) {
-                  final note = noteDatabase.currentNotes[index];
-                  return NoteTile(
-                    text: note.title,
-                    onEditPressed: () => _updateNote(note),
-                    onDeletePressed: () => _deleteNote(note.id),
-                    
-                  );
-                }
-                return null; 
+                final note = noteDatabase.currentNotes[index];
+                return NoteTile(
+                  title: note.title,        // judul
+                  content: note.content,    // deskripsi
+                  onEditPressed: () => _updateNote(note),
+                  onDeletePressed: () => _deleteNote(note.id),
+                );
               },
             ),
           ),

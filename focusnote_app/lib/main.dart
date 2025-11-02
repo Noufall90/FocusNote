@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:focusnote_app/database/task/task_database.dart';
-import 'package:focusnote_app/database/notes/note_database.dart';
+import 'package:focusnote_app/tema/theme_provide.dart';
+import 'package:focusnote_app/pages/task_page.dart';
 import 'package:focusnote_app/pages/note_page.dart';
 import 'package:focusnote_app/pages/stat_page.dart';
-import 'package:focusnote_app/pages/task_page.dart';
-import 'package:focusnote_app/tema/theme_provide.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +13,6 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => TaskDatabase()),
-        ChangeNotifierProvider(create: (_) => NoteDatabase()),
         ChangeNotifierProvider(create: (_) => ThemeProvide()),
       ],
       child: const MyApp(),
@@ -27,14 +25,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Gunakan Builder agar bisa akses context Provider
     return Builder(
       builder: (context) {
         final themeProvider = context.watch<ThemeProvide>();
 
         return MaterialApp(
           debugShowCheckedModeBanner: false,
+          title: 'FocusNote',
           theme: themeProvider.themeData,
+
+          // Halaman pertama yang dibuka
           initialRoute: '/task',
+
+          // Routing ke semua halaman
           routes: {
             '/task': (context) => const TaskPage(),
             '/note': (context) => const NotePage(),
