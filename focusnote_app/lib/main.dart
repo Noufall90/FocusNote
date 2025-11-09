@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:focusnote_app/database/task/task_database.dart';
 import 'package:focusnote_app/tema/theme_provide.dart';
+import 'package:focusnote_app/component/notif_service.dart';
 import 'package:focusnote_app/pages/task_page.dart';
 import 'package:focusnote_app/pages/note_page.dart';
 import 'package:focusnote_app/pages/stat_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  NotifService().initNotifications();
 
   runApp(const MyApp());
 }

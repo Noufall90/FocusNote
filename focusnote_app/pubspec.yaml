@@ -21,6 +21,8 @@ dependencies:
   drift: ^2.28.2
   sqlite3_flutter_libs: ^0.5.40
   path: ^1.9.1
+  alarm: ^5.1.5
+  flutter_local_notifications: ^19.5.0
 
 
 dev_dependencies:

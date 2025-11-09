@@ -230,6 +230,5 @@ class _TaskPageState extends State<TaskPage> {
           ),
         ],
       ),
-    );
-  }
+    );}
 }
