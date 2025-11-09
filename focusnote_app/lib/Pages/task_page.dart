@@ -223,12 +223,8 @@ class _TaskPageState extends State<TaskPage> {
                                 .updateCompletion(task.id, value ?? false);
                           },
                         )),
-                  ],
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );}
+                  ],);
+              },),
+          ),],
+      ),);}
 }
