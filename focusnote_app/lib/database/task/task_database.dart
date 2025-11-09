@@ -23,6 +23,8 @@ part 'task_database.g.dart';
 class TaskDatabase extends _$TaskDatabase with ChangeNotifier {
   TaskDatabase() : super(_openConnection());
 
+  TaskDatabase.inMemory() : super(NativeDatabase.memory());
+
   @override
   int get schemaVersion => 1;
 

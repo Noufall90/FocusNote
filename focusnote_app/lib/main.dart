@@ -9,15 +9,7 @@ import 'package:focusnote_app/pages/stat_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => TaskDatabase()),
-        ChangeNotifierProvider(create: (_) => ThemeProvide()),
-      ],
-      child: const MyApp(),
-    ),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -25,27 +17,31 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Gunakan Builder agar bisa akses context Provider
-    return Builder(
-      builder: (context) {
-        final themeProvider = context.watch<ThemeProvide>();
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => TaskDatabase()),
+        ChangeNotifierProvider(create: (_) => ThemeProvide()),
+      ],
+      
+      child: Consumer<ThemeProvide>(
+        builder: (context, themeProvider, _) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'FocusNote',
+            theme: themeProvider.themeData,
 
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'FocusNote',
-          theme: themeProvider.themeData,
+            // Halaman pertama yang dibuka
+            initialRoute: '/task',
 
-          // Halaman pertama yang dibuka
-          initialRoute: '/task',
-
-          // Routing ke semua halaman
-          routes: {
-            '/task': (context) => const TaskPage(),
-            '/note': (context) => const NotePage(),
-            '/stat': (context) => const StatPage(),
-          },
-        );
-      },
+            // Routing ke semua halaman
+            routes: {
+              '/task': (context) => const TaskPage(),
+              '/note': (context) => const NotePage(),
+              '/stat': (context) => const StatPage(),
+            },
+          );
+        },
+      ),
     );
   }
 }

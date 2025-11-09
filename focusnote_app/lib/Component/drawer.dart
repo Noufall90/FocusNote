@@ -25,8 +25,8 @@ class MyDrawer extends StatelessWidget
               Icons.settings_applications,
               size: 40,),
           ),
-
-// DARK MODE
+          
+          // DARK MODE
           DrawerTile
           (
             title: "Dark Mode",
