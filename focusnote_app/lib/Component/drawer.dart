@@ -19,7 +19,14 @@ class _MyDrawerState extends State<MyDrawer> {
   void initState() {
     super.initState();
     _notifService = NotifService();
-    _notifService.initNotifications(); // Ensure initialized
+    _notifService.initNotifications(); 
+    _initNotif();
+  }
+
+  Future<void> _initNotif() async {
+    await _notifService.initNotifications();
+    // kalau perlu refresh UI (untuk switch status)
+    setState(() {});
   }
 
   @override
@@ -80,6 +87,33 @@ class _MyDrawerState extends State<MyDrawer> {
                 await _notifService.showNotification(
                   title: "Test Notification",
                   body: "This is a test notification",
+                );
+                // ignore: use_build_context_synchronously
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Notifikasi dikirim")),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("Notifikasi sedang dimatikan"),
+                  ),
+                );
+              }
+            },
+            trailing: null,
+          ),
+
+          // TEST NOTIFIKASI SCHEDULE
+          DrawerTile(
+            title: "Test Notification Schedule",
+            leading: const Icon(Icons.notifications_active, size: 30),
+            onTap: () async {
+              if (_notifService.isNotificationEnabled) {
+                await _notifService.scheduleNotification(
+                  title: "Test Notification Scheadule",
+                  body: "This is a test notification",
+                  hour: 20,
+                  minute: 30,
                 );
                 // ignore: use_build_context_synchronously
                 ScaffoldMessenger.of(context).showSnackBar(

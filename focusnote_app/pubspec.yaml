@@ -23,6 +23,8 @@ dependencies:
   path: ^1.9.1
   alarm: ^5.1.5
   flutter_local_notifications: ^19.5.0
+  timezone: ^0.10.1
+  flutter_timezone: ^5.0.1
 
 
 dev_dependencies:
