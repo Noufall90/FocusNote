@@ -1,17 +1,12 @@
-// lib/database/task/task_database.dart
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
-
-// Untuk mendapatkan lokasi database
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
-
 // === Import Task ===
 import 'tables/tasks.dart';
 import 'task_dao.dart';
-
 // === Import Notes ===
 import 'package:focusnote_app/database/notes/tables/notes.dart';
 import 'package:focusnote_app/database/notes/note_dao.dart';
@@ -22,11 +17,25 @@ part 'task_database.g.dart';
 @DriftDatabase(tables: [Tasks, Notes], daos: [TaskDao, NoteDao])
 class TaskDatabase extends _$TaskDatabase with ChangeNotifier {
   TaskDatabase() : super(_openConnection());
-
   TaskDatabase.inMemory() : super(NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2; // TINGKATKAN VERSI INI!
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (Migrator m) async {
+        await m.createAll();
+      },
+      onUpgrade: (Migrator m, int from, int to) async {
+        if (from < 2) {
+          // Tambahkan kolom time ke tabel tasks
+          await m.addColumn(tasks, tasks.time);
+        }
+      },
+    );
+  }
 
   // === TASKS ===
   List<Task> _currentTasks = [];
@@ -44,8 +53,8 @@ class TaskDatabase extends _$TaskDatabase with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addTask(String title) async {
-    await task.addTask(title);
+  Future<void> addTask(String title, {String? time}) async {
+    await task.addTask(title, time: time);
     await readTasks();
   }
 

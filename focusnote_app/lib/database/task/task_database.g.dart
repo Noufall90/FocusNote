@@ -29,7 +29,7 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
     false,
     additionalChecks: GeneratedColumn.checkTextLength(
       minTextLength: 1,
-      maxTextLength: 100,
+      maxTextLength: 200,
     ),
     type: DriftSqlType.string,
     requiredDuringInsert: true,
@@ -49,8 +49,17 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _timeMeta = const VerificationMeta('time');
   @override
-  List<GeneratedColumn> get $columns => [id, title, isCompleted];
+  late final GeneratedColumn<String> time = GeneratedColumn<String>(
+    'time',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, title, isCompleted, time];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -83,6 +92,12 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
         ),
       );
     }
+    if (data.containsKey('time')) {
+      context.handle(
+        _timeMeta,
+        time.isAcceptableOrUnknown(data['time']!, _timeMeta),
+      );
+    }
     return context;
   }
 
@@ -104,6 +119,10 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
         DriftSqlType.bool,
         data['${effectivePrefix}is_completed'],
       )!,
+      time: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}time'],
+      ),
     );
   }
 
@@ -117,10 +136,12 @@ class Task extends DataClass implements Insertable<Task> {
   final int id;
   final String title;
   final bool isCompleted;
+  final String? time;
   const Task({
     required this.id,
     required this.title,
     required this.isCompleted,
+    this.time,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -128,6 +149,9 @@ class Task extends DataClass implements Insertable<Task> {
     map['id'] = Variable<int>(id);
     map['title'] = Variable<String>(title);
     map['is_completed'] = Variable<bool>(isCompleted);
+    if (!nullToAbsent || time != null) {
+      map['time'] = Variable<String>(time);
+    }
     return map;
   }
 
@@ -136,6 +160,7 @@ class Task extends DataClass implements Insertable<Task> {
       id: Value(id),
       title: Value(title),
       isCompleted: Value(isCompleted),
+      time: time == null && nullToAbsent ? const Value.absent() : Value(time),
     );
   }
 
@@ -148,6 +173,7 @@ class Task extends DataClass implements Insertable<Task> {
       id: serializer.fromJson<int>(json['id']),
       title: serializer.fromJson<String>(json['title']),
       isCompleted: serializer.fromJson<bool>(json['isCompleted']),
+      time: serializer.fromJson<String?>(json['time']),
     );
   }
   @override
@@ -157,13 +183,20 @@ class Task extends DataClass implements Insertable<Task> {
       'id': serializer.toJson<int>(id),
       'title': serializer.toJson<String>(title),
       'isCompleted': serializer.toJson<bool>(isCompleted),
+      'time': serializer.toJson<String?>(time),
     };
   }
 
-  Task copyWith({int? id, String? title, bool? isCompleted}) => Task(
+  Task copyWith({
+    int? id,
+    String? title,
+    bool? isCompleted,
+    Value<String?> time = const Value.absent(),
+  }) => Task(
     id: id ?? this.id,
     title: title ?? this.title,
     isCompleted: isCompleted ?? this.isCompleted,
+    time: time.present ? time.value : this.time,
   );
   Task copyWithCompanion(TasksCompanion data) {
     return Task(
@@ -172,6 +205,7 @@ class Task extends DataClass implements Insertable<Task> {
       isCompleted: data.isCompleted.present
           ? data.isCompleted.value
           : this.isCompleted,
+      time: data.time.present ? data.time.value : this.time,
     );
   }
 
@@ -180,45 +214,52 @@ class Task extends DataClass implements Insertable<Task> {
     return (StringBuffer('Task(')
           ..write('id: $id, ')
           ..write('title: $title, ')
-          ..write('isCompleted: $isCompleted')
+          ..write('isCompleted: $isCompleted, ')
+          ..write('time: $time')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, title, isCompleted);
+  int get hashCode => Object.hash(id, title, isCompleted, time);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Task &&
           other.id == this.id &&
           other.title == this.title &&
-          other.isCompleted == this.isCompleted);
+          other.isCompleted == this.isCompleted &&
+          other.time == this.time);
 }
 
 class TasksCompanion extends UpdateCompanion<Task> {
   final Value<int> id;
   final Value<String> title;
   final Value<bool> isCompleted;
+  final Value<String?> time;
   const TasksCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
     this.isCompleted = const Value.absent(),
+    this.time = const Value.absent(),
   });
   TasksCompanion.insert({
     this.id = const Value.absent(),
     required String title,
     this.isCompleted = const Value.absent(),
+    this.time = const Value.absent(),
   }) : title = Value(title);
   static Insertable<Task> custom({
     Expression<int>? id,
     Expression<String>? title,
     Expression<bool>? isCompleted,
+    Expression<String>? time,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (title != null) 'title': title,
       if (isCompleted != null) 'is_completed': isCompleted,
+      if (time != null) 'time': time,
     });
   }
 
@@ -226,11 +267,13 @@ class TasksCompanion extends UpdateCompanion<Task> {
     Value<int>? id,
     Value<String>? title,
     Value<bool>? isCompleted,
+    Value<String?>? time,
   }) {
     return TasksCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
       isCompleted: isCompleted ?? this.isCompleted,
+      time: time ?? this.time,
     );
   }
 
@@ -246,6 +289,9 @@ class TasksCompanion extends UpdateCompanion<Task> {
     if (isCompleted.present) {
       map['is_completed'] = Variable<bool>(isCompleted.value);
     }
+    if (time.present) {
+      map['time'] = Variable<String>(time.value);
+    }
     return map;
   }
 
@@ -254,7 +300,8 @@ class TasksCompanion extends UpdateCompanion<Task> {
     return (StringBuffer('TasksCompanion(')
           ..write('id: $id, ')
           ..write('title: $title, ')
-          ..write('isCompleted: $isCompleted')
+          ..write('isCompleted: $isCompleted, ')
+          ..write('time: $time')
           ..write(')'))
         .toString();
   }
@@ -524,12 +571,14 @@ typedef $$TasksTableCreateCompanionBuilder =
       Value<int> id,
       required String title,
       Value<bool> isCompleted,
+      Value<String?> time,
     });
 typedef $$TasksTableUpdateCompanionBuilder =
     TasksCompanion Function({
       Value<int> id,
       Value<String> title,
       Value<bool> isCompleted,
+      Value<String?> time,
     });
 
 class $$TasksTableFilterComposer extends Composer<_$TaskDatabase, $TasksTable> {
@@ -552,6 +601,11 @@ class $$TasksTableFilterComposer extends Composer<_$TaskDatabase, $TasksTable> {
 
   ColumnFilters<bool> get isCompleted => $composableBuilder(
     column: $table.isCompleted,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get time => $composableBuilder(
+    column: $table.time,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -579,6 +633,11 @@ class $$TasksTableOrderingComposer
     column: $table.isCompleted,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get time => $composableBuilder(
+    column: $table.time,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TasksTableAnnotationComposer
@@ -600,6 +659,9 @@ class $$TasksTableAnnotationComposer
     column: $table.isCompleted,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get time =>
+      $composableBuilder(column: $table.time, builder: (column) => column);
 }
 
 class $$TasksTableTableManager
@@ -633,20 +695,24 @@ class $$TasksTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> title = const Value.absent(),
                 Value<bool> isCompleted = const Value.absent(),
+                Value<String?> time = const Value.absent(),
               }) => TasksCompanion(
                 id: id,
                 title: title,
                 isCompleted: isCompleted,
+                time: time,
               ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 required String title,
                 Value<bool> isCompleted = const Value.absent(),
+                Value<String?> time = const Value.absent(),
               }) => TasksCompanion.insert(
                 id: id,
                 title: title,
                 isCompleted: isCompleted,
+                time: time,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

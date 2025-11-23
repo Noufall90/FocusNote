@@ -47,7 +47,7 @@ class MyBarGraph extends StatelessWidget {
                 barRods: [
                   BarChartRodData(
                     toY: data.y,
-                    color: const Color.fromARGB(255, 255, 186, 121),
+                    color: const Color.fromARGB(255, 255, 181, 112),
                     width: 25,
                     borderRadius: BorderRadius.circular(6),
                     backDrawRodData: BackgroundBarChartRodData(
@@ -66,7 +66,6 @@ class MyBarGraph extends StatelessWidget {
 }
 
 Widget getBottomTiles(double value, TitleMeta meta) {
-  // jangan pakai const kalau menggunakan Colors.grey[index]
   final style = TextStyle(
     color: Colors.grey.shade800,
     fontWeight: FontWeight.bold,
@@ -79,22 +78,22 @@ Widget getBottomTiles(double value, TitleMeta meta) {
       text = Text('S', style: style);
       break;
     case 1:
-      text = Text('M', style: style);
+      text = Text('S', style: style);
       break;
     case 2:
-      text = Text('T', style: style);
+      text = Text('R', style: style);
       break;
     case 3:
-      text = Text('W', style: style);
+      text = Text('K', style: style);
       break;
     case 4:
-      text = Text('T', style: style);
+      text = Text('J', style: style);
       break;
     case 5:
-      text = Text('F', style: style);
+      text = Text('S', style: style);
       break;
     case 6:
-      text = Text('S', style: style);
+      text = Text('M', style: style);
       break;
     default:
       text = Text('', style: style);

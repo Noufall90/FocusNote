@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class TaskTile extends StatelessWidget {
   final String text;
   final bool isCompleted;
+  final String? time; // Tambahkan parameter time
   final void Function()? onEditPressed;
   final void Function()? onDeletePressed;
   final ValueChanged<bool?> onCheckboxChanged;
@@ -11,6 +12,7 @@ class TaskTile extends StatelessWidget {
     super.key,
     required this.text,
     required this.isCompleted,
+    this.time, // Jadikan optional
     required this.onEditPressed,
     required this.onDeletePressed,
     required this.onCheckboxChanged,
@@ -28,7 +30,6 @@ class TaskTile extends StatelessWidget {
       ),
       child: Column(
         children: [
-          
           // --- TILE UTAMA ---
           ListTile(
             title: Text(
@@ -59,6 +60,38 @@ class TaskTile extends StatelessWidget {
               ],
             ),
           ),
+
+          // Tampilkan waktu jika ada
+          if (time != null)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+              decoration: BoxDecoration(
+                // ignore: deprecated_member_use
+                color: colorScheme.secondaryContainer.withOpacity(0.4),
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(12),
+                  bottomRight: Radius.circular(12),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.access_time,
+                    size: 16,
+                    color: colorScheme.onSecondaryContainer,
+                  ),
+                  const SizedBox(width: 5),
+                  Text(
+                    time!,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: colorScheme.onSecondaryContainer,
+                    ),
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );

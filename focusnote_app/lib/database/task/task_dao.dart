@@ -8,9 +8,12 @@ part 'task_dao.g.dart';
 class TaskDao extends DatabaseAccessor<TaskDatabase> with _$TaskDaoMixin {
   TaskDao(super.db);
 
-  // CREATE
-  Future<void> addTask(String title) async {
-    await into(tasks).insert(TasksCompanion.insert(title: title));
+  // CREATE - dengan waktu
+  Future<void> addTask(String title, {String? time}) async {
+    await into(tasks).insert(TasksCompanion.insert(
+      title: title,
+      time: Value(time),
+    ));
   }
 
   // READ
@@ -22,7 +25,7 @@ class TaskDao extends DatabaseAccessor<TaskDatabase> with _$TaskDaoMixin {
         .write(TasksCompanion(title: Value(newTitle)));
   }
 
-  // UPDATE
+  // UPDATE COMPLETION
   Future<void> updateCompletion(int id, bool isCompleted) async {
     await (update(tasks)..where((t) => t.id.equals(id)))
         .write(TasksCompanion(isCompleted: Value(isCompleted)));

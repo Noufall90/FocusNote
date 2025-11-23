@@ -16,13 +16,12 @@ class TaskPage extends StatefulWidget {
 
 class _TaskPageState extends State<TaskPage> {
   final textController = TextEditingController();
-  TimeOfDay? _selectedTime; // Tambahkan state untuk waktu yang dipilih
+  TimeOfDay? _selectedTime;
 
   @override
   void initState() {
     super.initState();
     _readTasks();
-    // Inisialisasi notifikasi
     NotifService().initNotifications();
   }
 
@@ -66,13 +65,15 @@ class _TaskPageState extends State<TaskPage> {
                 ),
               ),
             )
-
-
           ],
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              textController.clear();
+              _selectedTime = null;
+              Navigator.pop(context);
+            },
             style: TextButton.styleFrom(
               foregroundColor: Theme.of(context).colorScheme.inversePrimary,
             ),
@@ -81,8 +82,14 @@ class _TaskPageState extends State<TaskPage> {
           FilledButton(
             onPressed: () {
               if (textController.text.isNotEmpty && _selectedTime != null) {
-                // Buat task
-                context.read<TaskDatabase>().addTask(textController.text);
+                // Format waktu sebagai string HH:mm
+                String formattedTime = '${_selectedTime!.hour.toString().padLeft(2, '0')}:${_selectedTime!.minute.toString().padLeft(2, '0')}';
+                
+                // Buat task dengan waktu
+                context.read<TaskDatabase>().addTask(
+                  textController.text,
+                  time: formattedTime,
+                );
                 
                 // Jadwalkan notifikasi
                 NotifService().scheduleNotification(
@@ -93,10 +100,9 @@ class _TaskPageState extends State<TaskPage> {
                 );
                 
                 textController.clear();
-                _selectedTime = null; // Reset waktu
+                _selectedTime = null;
                 Navigator.pop(context);
               } else {
-                // Opsional: Tampilkan pesan error jika waktu belum dipilih
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Please enter a title and select a time.")),
                 );
@@ -130,7 +136,14 @@ class _TaskPageState extends State<TaskPage> {
           decoration: const InputDecoration(hintText: "Update task title..."),
         ),
         actions: [
-          MaterialButton(
+          TextButton(
+            onPressed: () {
+              textController.clear();
+              Navigator.pop(context);
+            },
+            child: const Text("Cancel"),
+          ),
+          FilledButton(
             onPressed: () {
               context
                   .read<TaskDatabase>()
@@ -149,6 +162,12 @@ class _TaskPageState extends State<TaskPage> {
   // DELETE TASK
   void _deleteTask(int id) {
     context.read<TaskDatabase>().deleteTask(id);
+  }
+
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
   }
 
   // UI
@@ -180,10 +199,7 @@ class _TaskPageState extends State<TaskPage> {
         foregroundColor: Theme.of(context).colorScheme.inversePrimary,
         iconTheme: const IconThemeData(size: 30),
       ),
-
       backgroundColor: Theme.of(context).colorScheme.surface,
-
-      // BUTTON ADD TASK
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 0.0, right: 10.0),
         child: FloatingActionButton(
@@ -195,9 +211,7 @@ class _TaskPageState extends State<TaskPage> {
           ),
         ),
       ),
-
       endDrawer: const MyDrawer(),
-
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -241,6 +255,7 @@ class _TaskPageState extends State<TaskPage> {
                       ...activeTasks.map((task) => TaskTile(
                             text: task.title,
                             isCompleted: task.isCompleted,
+                            time: task.time, // Tambahkan waktu
                             onEditPressed: () => _updateTask(task),
                             onDeletePressed: () => _deleteTask(task.id),
                             onCheckboxChanged: (value) {
@@ -267,6 +282,7 @@ class _TaskPageState extends State<TaskPage> {
                     ...completedTasks.map((task) => TaskTile(
                           text: task.title,
                           isCompleted: task.isCompleted,
+                          time: task.time, // Tambahkan waktu
                           onEditPressed: () => _updateTask(task),
                           onDeletePressed: () => _deleteTask(task.id),
                           onCheckboxChanged: (value) {
@@ -275,8 +291,13 @@ class _TaskPageState extends State<TaskPage> {
                                 .updateCompletion(task.id, value ?? false);
                           },
                         )),
-                  ],);
-              },),
-          ),],),
-    );}
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
