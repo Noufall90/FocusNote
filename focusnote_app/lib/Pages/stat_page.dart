@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:focusnote_app/component/bar/bar_graph.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:focusnote_app/component/drawer.dart';
 import 'package:focusnote_app/component/navbar.dart';
 
-class StatPage extends StatefulWidget{
+class StatPage extends StatefulWidget {
   const StatPage({super.key});
 
   @override
@@ -11,7 +12,17 @@ class StatPage extends StatefulWidget{
 }
 
 class _StatPageState extends State<StatPage> {
-  @override 
+  List<double> weeklySummary = [
+    4,
+    2,
+    4,
+    1,
+    7,
+    8,
+    9,
+  ];
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: const NavBar(selectedIndex: 2),
@@ -23,8 +34,8 @@ class _StatPageState extends State<StatPage> {
               padding: const EdgeInsets.only(left: 20),
               child: Image.asset(
                 Theme.of(context).brightness == Brightness.dark
-                    ? 'assets/icon/logo_bar_putih.png' 
-                    : 'assets/icon/logo_bar.png',  
+                    ? 'assets/icon/logo_bar_putih.png'
+                    : 'assets/icon/logo_bar.png',
                 height: 30,
                 fit: BoxFit.contain,
               ),
@@ -37,9 +48,9 @@ class _StatPageState extends State<StatPage> {
         foregroundColor: Theme.of(context).colorScheme.inversePrimary,
         iconTheme: const IconThemeData(size: 30),
       ),
-      
       backgroundColor: Theme.of(context).colorScheme.surface,
       endDrawer: const MyDrawer(),
+
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -54,8 +65,18 @@ class _StatPageState extends State<StatPage> {
               ),
             ),
           ),
+          const SizedBox(height: 20),
+
+          // GRAPH
+          SizedBox(
+            height: 300,
+            child: MyBarGraph(
+              weeklySummary: weeklySummary,
+            ),
+          ),
         ],
       ),
     );
   }
 }
+

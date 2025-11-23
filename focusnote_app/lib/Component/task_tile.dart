@@ -59,25 +59,6 @@ class TaskTile extends StatelessWidget {
               ],
             ),
           ),
-
-          // --- TILE KECIL TAMBAHAN (tidak berubah) ---
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-            decoration: BoxDecoration(
-
-              // ignore: deprecated_member_use
-              color: colorScheme.secondaryContainer.withOpacity(0.4),
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(12),
-                bottomRight: Radius.circular(12),
-              ),
-            ),
-            child: const Text(
-              "11 : 00 AM", 
-              style: TextStyle(fontSize: 13),
-            ),
-          ),
         ],
       ),
     );

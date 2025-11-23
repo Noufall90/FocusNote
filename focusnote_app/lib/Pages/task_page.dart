@@ -5,6 +5,7 @@ import 'package:focusnote_app/component/task_tile.dart';
 import 'package:focusnote_app/database/task/task_database.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:focusnote_app/component/notif_service.dart';
 
 class TaskPage extends StatefulWidget {
   const TaskPage({super.key});
@@ -15,51 +16,102 @@ class TaskPage extends StatefulWidget {
 
 class _TaskPageState extends State<TaskPage> {
   final textController = TextEditingController();
+  TimeOfDay? _selectedTime; // Tambahkan state untuk waktu yang dipilih
 
   @override
   void initState() {
     super.initState();
     _readTasks();
+    // Inisialisasi notifikasi
+    NotifService().initNotifications();
   }
 
   // CREATE TASK
   void _createTask() {
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: const Text("Create Task"),
-      content: TextField(
-        controller: textController,
-        decoration: const InputDecoration(
-          hintText: "Enter task title...",
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Create Task"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: textController,
+              decoration: const InputDecoration(
+                hintText: "Enter task title...",
+              ),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+              ),
+              onPressed: () async {
+                TimeOfDay? picked = await showTimePicker(
+                  context: context,
+                  initialTime: TimeOfDay.now(),
+                );
+                if (picked != null) {
+                  setState(() {
+                    _selectedTime = picked;
+                  });
+                }
+              },
+              child: Text(
+                _selectedTime == null
+                    ? "Pick Notification Time"
+                    : "Time: ${_selectedTime!.format(context)}",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.inversePrimary,
+                ),
+              ),
+            )
+
+
+          ],
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+            ),
+            child: const Text("Cancel"),
+          ),
+          FilledButton(
+            onPressed: () {
+              if (textController.text.isNotEmpty && _selectedTime != null) {
+                // Buat task
+                context.read<TaskDatabase>().addTask(textController.text);
+                
+                // Jadwalkan notifikasi
+                NotifService().scheduleNotification(
+                  title: "Task Reminder",
+                  body: textController.text,
+                  hour: _selectedTime!.hour,
+                  minute: _selectedTime!.minute,
+                );
+                
+                textController.clear();
+                _selectedTime = null; // Reset waktu
+                Navigator.pop(context);
+              } else {
+                // Opsional: Tampilkan pesan error jika waktu belum dipilih
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Please enter a title and select a time.")),
+                );
+              }
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              foregroundColor: Theme.of(context).colorScheme.primary,
+            ),
+            child: const Text("Create"),
+          ),
+        ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          style: TextButton.styleFrom(
-            foregroundColor: Theme.of(context).colorScheme.inversePrimary,
-          ),
-          child: const Text("Cancel"),
-        ),
-        FilledButton(
-          onPressed: () {
-            if (textController.text.isNotEmpty) {
-              context.read<TaskDatabase>().addTask(textController.text);
-              textController.clear();
-              Navigator.pop(context);
-            }
-          },
-          style: FilledButton.styleFrom(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            foregroundColor: Theme.of(context).colorScheme.primary,
-          ),
-          child: const Text("Create"),
-        ),
-      ],
-    ),
-  );
-}
+    );
+  }
 
   // READ TASKS
   void _readTasks() {
@@ -137,7 +189,7 @@ class _TaskPageState extends State<TaskPage> {
         child: FloatingActionButton(
           onPressed: _createTask,
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-         child: Icon(
+          child: Icon(
             Icons.add,
             color: Theme.of(context).colorScheme.primary,
           ),
@@ -162,7 +214,7 @@ class _TaskPageState extends State<TaskPage> {
           ),
 
           // LIST TASKS
-            Expanded(
+          Expanded(
             child: Builder(
               builder: (context) {
                 final allTasks = taskDatabase.currentTasks;
@@ -225,6 +277,6 @@ class _TaskPageState extends State<TaskPage> {
                         )),
                   ],);
               },),
-          ),],
-      ),);}
+          ),],),
+    );}
 }

@@ -35,7 +35,8 @@ class NotifService {
     // TIMEZONE
     tz.initializeTimeZones();
     final currentTimeZone = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(currentTimeZone.toString()));
+    final locationName = currentTimeZone.toString().split(',')[0].replaceAll('TimezoneInfo(', '');
+    tz.setLocalLocation(tz.getLocation(locationName));
 
     await _loadNotificationStatus();
 
@@ -46,6 +47,7 @@ class NotifService {
     final androidPlugin = notificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
     if (androidPlugin != null) {
       await androidPlugin.requestNotificationsPermission();
+      await androidPlugin.requestExactAlarmsPermission(); 
     }
 
     await notificationsPlugin.initialize(initSettings);
@@ -99,7 +101,9 @@ class NotifService {
     required int hour,
     required int minute,
   }) async {
-    final now =  tz.TZDateTime.now(tz.local);
+    if (!_isNotificationEnabled) return; // Tambahkan check ini
+
+    final now = tz.TZDateTime.now(tz.local);
 
     var scheduledDate = tz.TZDateTime(
       tz.local,
@@ -117,15 +121,16 @@ class NotifService {
       body,
       scheduledDate,
       notificationDetails(),
-      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle, // Ubah ke exact untuk akurasi lebih baik
       matchDateTimeComponents: DateTimeComponents.time,
     );
     
-    
     // ignore: avoid_print
-    print('Scheduled notification');
+    print('Scheduled notification for $scheduledDate');
   }
+
   Future<void> cancelAllNotification() async {
     await notificationsPlugin.cancelAll();
   }
 }
+

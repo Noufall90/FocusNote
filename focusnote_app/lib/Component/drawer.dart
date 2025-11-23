@@ -112,8 +112,8 @@ class _MyDrawerState extends State<MyDrawer> {
                 await _notifService.scheduleNotification(
                   title: "Test Notification Scheadule",
                   body: "This is a test notification",
-                  hour: 20,
-                  minute: 30,
+                  hour: 18,
+                  minute: 38,
                 );
                 // ignore: use_build_context_synchronously
                 ScaffoldMessenger.of(context).showSnackBar(
