@@ -18,7 +18,7 @@ void main() {
 
     expect(database.currentNotes.length, 2);
 
-    // Karena order by desc id → note terbaru ada di index 0
+    // Karena order by desc id jadi note terbaru ada di index 0
     expect(database.currentNotes.first.title, "Judul Kedua");
     expect(database.currentNotes.last.title, "Judul Pertama");
   });
